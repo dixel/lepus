@@ -18,12 +18,7 @@
   (case (:cmd config)
     "start"
     (do
-      (try
-        (rmq/stop rmq-conn)
-        (catch Exception e
-          (log/info
-           "not stopping the connection: "
-           e)))
+      (rmq/safe-stop rmq-conn)
       (swap!
        connection
        (fn [state]
@@ -41,7 +36,7 @@
                :routing-key (:routing-key %)))))))))
 
     "stop" (do
-             (rmq/stop rmq-conn)
+             (rmq/safe-stop rmq-conn)
              (swap! connection
                     #(dissoc % channel))
              (http/send! channel "# stopped"))
@@ -59,13 +54,12 @@
         (http/with-channel req channel
           (http/on-close channel (fn [status]
                                    (when-let [conn (@connection channel)]
-                                     (rmq/stop conn)
+                                     (rmq/safe-stop conn)
                                      (swap! connection
                                             #(dissoc % channel)))
                                    (log/info "channel closed")))
           (http/on-receive channel
                            (fn [data]
-                             (log/infof "got data: %s" data)
                              (let [config (json/decode data true)
                                    rmq-conn (@connection channel)]
                                (websocket-server channel rmq-conn config))))))

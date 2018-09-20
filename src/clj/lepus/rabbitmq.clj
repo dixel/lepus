@@ -34,3 +34,10 @@
 
 (defn stop [ch]
   (rmq/close ch))
+
+(defn safe-stop [ch]
+  (try
+    (stop ch)
+    (catch Exception e
+      (log/info "not stopping rabbitmq connection: " e))))
+
