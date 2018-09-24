@@ -3,7 +3,10 @@
             [goog.string :as gstring]
             [goog.string.format]
             [taoensso.timbre :as log]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [cljs.core.async :as a])
+  (:require-macros
+   [cljs.core.async.macros :refer [go]]))
 
 (enable-console-print!)
 
@@ -20,7 +23,6 @@
    (clj->js
     data)))
 
-
 (defn message-handler [msg]
   (swap! app-state
          (fn [state]
@@ -33,6 +35,7 @@
                                               %
                                               nil
                                               2)))))))))
+
 (defn websocket-start []
   (let [ws (:ws
             (swap!
@@ -80,14 +83,14 @@
         (catch js/Object e
           (.log js/console "failed to close websocket...")))
       (websocket-start))}
-   [:i {:class "fas fa-play"} ">"]])
+   [:i {:class "fas fa-play"}]])
 
 (def pause-button
   [:button
    {:on-click (fn []
                 (when-let [ws (:ws @app-state)]
                   (.send ws (->json {:cmd :stop}))))}
-   [:i {:class "fas fa-pause"} "||"]])
+   [:i {:class "fas fa-pause"}]])
 
 (def stop-button
   [:button
@@ -95,7 +98,7 @@
                 (swap! app-state #(assoc % :middle '()))
                 (when-let [ws (:ws @app-state)]
                   (.send ws (->json {:cmd :stop}))))}
-   [:i {:class "fas fa-stop"} "[]"]])
+   [:i {:class "fas fa-stop"}]])
 
 (defn app []
   [:div {:id "wrap"}
