@@ -1,5 +1,8 @@
 # lepus
-*track down what's going on in rabbitmq* 
+*simply view topic exchange content from rabbitmq*
+
+## About
+Simple web application to track the content of the topic exchange in RabbitMQ
 
 ## Running
 
