@@ -2,9 +2,6 @@ version: 2
 jobs:
   build:
     working_directory: ~/lepus
-    branches:
-      only:
-        - master
     docker:
       - image: circleci/clojure:lein-2.7.1
     environment:
