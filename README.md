@@ -1,10 +1,16 @@
 # lepus
 *simply view topic exchange content from rabbitmq*
 
+![](./pic/lepus.png)
+
 ## About
 Simple web application to track the content of the topic exchange in RabbitMQ
 
 ## Running
+
+```bash
+docker run -p 10555:10555 dixel/lepus:0.1.0-SNAPSHOT.1
+```
 
 ```clojure
 lein repl

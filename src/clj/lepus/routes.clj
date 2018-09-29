@@ -9,9 +9,6 @@
             [taoensso.timbre :as log]
             [ring.util.response :refer [response]]))
 
-(defn rabbitmq-consume [config handler]
-  (rmq/consume-from-exchange config handler))
-
 (defonce connection (atom {}))
 
 (defn websocket-server [channel rmq-conn config]
@@ -24,7 +21,7 @@
        (fn [state]
          (assoc
           state channel
-          (rabbitmq-consume
+          (rmq/consume-from-exchange
            (assoc config
                   :channel
                   (.toString channel))
